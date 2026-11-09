@@ -85,12 +85,10 @@ btnLimparTudo.addEventListener("click", function () {
     }
 });
 
-// 🆕 Evento de digitação dinâmica para disparar a busca instantânea
 campoBusca.addEventListener("input", function () {
     atualizarInterface();
 });
 
-// 🆕 Função intermediária para filtrar os produtos com base no texto digitado
 function obterProdutosFiltrados() {
     const termoBusca = campoBusca.value.toLowerCase().trim();
     return listaDeProdutos.filter(produto => 
@@ -126,7 +124,6 @@ function removerProduto(index) {
     atualizarInterface();
 }
 
-// 🆕 Atualiza o total considerando unicamente os itens visíveis na tabela filtrada
 function atualizarTotalEstoque() {
     const produtosVisiveis = obterProdutosFiltrados();
     const total = produtosVisiveis.reduce((acc, produto) => {
