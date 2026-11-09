@@ -19,13 +19,11 @@
             </div>
 
             <div class="form-group">
-
                 <label for="preco">Preço (R$):</label>
                 <input type="number" id="preco" step="0.01" placeholder="Ex. 3500,00" required/>
             </div>
 
             <div class="form-group">
-
                 <label for="quantidade">Quantidade:</label>
                 <input type="number" id="quantidade" placeholder="Ex. 5" required/>
             </div>
@@ -36,6 +34,11 @@
         <div class="resumo-container">
             <h3 id="total-estoque">Total em Estoque: R$ 0.00</h3>
             <button id="limpar-tabela" class="btn-danger">Limpar tudo</button>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label for="campo-busca">Pesquisar produto:</label>
+            <input type="text" id="campo-busca" placeholder="Digite para filtrar..."/>
         </div>
         
         <table id="tabela-produtos">
