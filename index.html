@@ -1,48 +1,66 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Estoque - POO</title>
+    <title>Sistema de Estoque - V5</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
     <div class="container">
+
         <h1>Cadastro de Produtos</h1>
         <h3>Arthur Marcos e Leo</h3>
-
+        
         <form id="produto-form">
+
+            <div id="mensagem-erro" class="mensagem-inline" role="alert" aria-live="polite"></div>
+
             <div class="form-group">
                 <label for="nome">Nome do produto:</label>
-                <input type="text" id="nome" placeholder="Ex. Notebook" required/>
+                <input type="text" id="nome" placeholder="Ex. Notebook" required>
             </div>
 
             <div class="form-group">
                 <label for="preco">Preço (R$):</label>
-                <input type="number" id="preco" step="0.01" placeholder="Ex. 3500,00" required/>
+                <input type="number" id="preco" step="0.01" min="0.01"
+                    placeholder="Ex. 3500,00" required>
             </div>
 
             <div class="form-group">
                 <label for="quantidade">Quantidade:</label>
-                <input type="number" id="quantidade" placeholder="Ex. 5" required/>
+                <input type="number" id="quantidade" min="1"
+                    placeholder="Ex. 5" required>
             </div>
 
-            <button type="submit" class="btn-primary">Adicionar Produto</button>
+            <button type="submit" class="btn-primary">
+                Adicionar Produto
+            </button>
+
         </form>
 
         <div class="resumo-container">
+
             <h3 id="total-estoque">Total em Estoque: R$ 0.00</h3>
-            <button id="limpar-tabela" class="btn-danger">Limpar tudo</button>
+
+            <button type="button" id="limpar-tabela" class="btn-danger">
+                Limpar tudo
+            </button>
+
         </div>
 
-        <div class="form-group" style="margin-bottom: 15px;">
+        <div class="form-group pesquisa">
             <label for="campo-busca">Pesquisar produto:</label>
-            <input type="text" id="campo-busca" placeholder="Digite para filtrar..."/>
+            <input type="text" id="campo-busca"
+                placeholder="Digite para filtrar...">
         </div>
-        
+
         <table id="tabela-produtos">
+
             <thead>
                 <tr>
                     <th>Nome</th>
@@ -52,12 +70,86 @@
                     <th>Ações</th>
                 </tr>
             </thead>
+
             <tbody>
             </tbody>
+
         </table>
+
+        <div class="bootstrap-container">
+            <button type="button" id="btn-bootstrap" class="btn-bootstrap">
+                Ver Conceito Bootstrap
+            </button>
+        </div>
+
+    </div>
+
+    <div id="modal-confirmacao" class="modal-overlay"
+        role="dialog" aria-modal="true" aria-labelledby="titulo-modal"
+        aria-describedby="texto-modal" hidden>
+
+        <div class="modal-content">
+
+            <h2 id="titulo-modal">Confirmar exclusão</h2>
+
+            <p id="texto-modal">
+                Tem certeza que deseja realizar esta ação?
+            </p>
+
+            <div class="modal-botoes">
+
+                <button type="button" id="btn-cancelar" class="btn-cancelar">
+                    Cancelar
+                </button>
+
+                <button type="button" id="btn-confirmar" class="btn-confirmar">
+                    Confirmar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="modal-bootstrap" class="modal-overlay"
+        role="dialog" aria-modal="true"
+        aria-labelledby="titulo-bootstrap" hidden>
+
+        <div class="modal-content">
+
+            <h2 id="titulo-bootstrap">O que é Bootstrap?</h2>
+
+            <p>
+                Bootstrap é uma biblioteca de código aberto que facilita
+                a criação de interfaces para sites e aplicações.
+            </p>
+
+            <p>
+                Ele oferece componentes prontos, como botões, formulários,
+                tabelas, menus e janelas modais, além de recursos para
+                adaptar páginas a diferentes tamanhos de tela.
+            </p>
+
+            <p>
+                Com o Bootstrap, os desenvolvedores conseguem criar
+                interfaces modernas e responsivas com mais facilidade.
+            </p>
+
+            <div class="modal-botoes">
+
+                <button type="button" id="btn-fechar-bootstrap"
+                    class="btn-cancelar">
+                    Fechar
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
 
     <script src="script.js"></script>
-</body>
 
+</body>
 </html>

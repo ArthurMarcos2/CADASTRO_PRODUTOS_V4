@@ -1,139 +1,352 @@
-*{
+
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-body{
+body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     background-color: #0f0f0f;
     color: #333;
     padding: 20px;
+    min-height: 100vh;
 }
 
-.container{
-    max-width: 650px;
+.container {
+    max-width: 750px;
     background-color: #ffffff;
     margin: 30px auto;
     padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 6px 14px rgb(211, 211, 211);
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
 }
 
-h1{
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1e293b;
+    font-size: 28px;
+}
+
+h3 {
     text-align: center;
     margin-bottom: 20px;
     color: #1e293b;
 }
 
-h3{
-    text-align: center;
-    margin-bottom: 20px;
-    color: #1e293b;
-}
-
-form{
+form {
     display: flex;
     flex-direction: column;
     gap: 15px;
     margin-bottom: 25px;
 }
 
-.form-group{
+.form-group {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 6px;
 }
 
-label{
+label {
     font-weight: bold;
     font-size: 14px;
+    color: #1e293b;
 }
 
-input{
-    padding: 10px;
+input {
+    width: 100%;
+    padding: 11px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: 5px;
+    font-size: 15px;
+    transition: 0.2s;
 }
 
-input:focus{
+input:focus {
     outline: none;
     border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
-button{
+button {
     padding: 10px 15px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: 0.2s ease;
 }
 
-.btn-primary{
-    background-color: #535353;
-    color: rgb(255, 255, 255);
+button:hover {
+    transform: translateY(-1px);
 }
 
-.btn-primary:hover{
-    background-color: #000000;
+button:focus-visible {
+    outline: 3px solid #60a5fa;
+    outline-offset: 3px;
 }
 
-.btn-danger{
+.btn-primary {
     background-color: #535353;
     color: white;
 }
 
-.btn-danger:hover{
-    background-color: rgb(0, 0, 0);
+.btn-primary:hover {
+    background-color: #000000;
 }
 
-.resumo-container{
+.btn-danger {
+    background-color: #535353;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #000000;
+}
+
+.btn-editar,
+.btn-remover {
+    background-color: #535353;
+    color: white;
+    padding: 7px 10px;
+    font-size: 12px;
+    margin: 3px;
+}
+
+.btn-editar:hover,
+.btn-remover:hover {
+    background-color: #000000;
+}
+
+.mensagem-inline {
+    display: none;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    animation: aparecer 0.3s ease;
+}
+
+.mensagem-inline.erro {
+    display: block;
+    color: #991b1b;
+    background-color: #fee2e2;
+    border: 1px solid #f87171;
+}
+
+.mensagem-inline.sucesso {
+    display: block;
+    color: #162865;
+    background-color: #dcdffc;
+    border: 1px solid #4a6dde;
+}
+
+.resumo-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    padding-top: 10px;
-    border-top: 2px solid whitesmoke;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-top: 15px;
+    border-top: 2px solid #e2e8f0;
 }
 
-#total-estoque{
+#total-estoque {
     font-size: 18px;
     color: #0f172a;
+    margin: 0;
 }
 
-table{
+.pesquisa {
+    margin-bottom: 15px;
+}
+
+table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
 }
 
-th, td{
+th,
+td {
     border: 1px solid #cbd5e1;
-    padding: 10px;
+    padding: 11px;
+    text-align: center;
+    font-size: 13px;
+}
+
+th {
+    background-color: #000000;
+    color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f1f5f9;
+}
+
+tbody tr:hover {
+    background-color: #e2e8f0;
+}
+
+.bootstrap-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-bootstrap {
+    background-color: #535353;
+    color: white;
+    padding: 12px 20px;
+}
+
+.btn-bootstrap:hover {
+    background-color: #000000;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 1000;
+    animation: aparecer 0.3s ease;
+}
+
+.modal-overlay[hidden] {
+    display: none !important;
+}
+
+.modal-content {
+    background-color: white;
+    width: 100%;
+    max-width: 450px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    animation: subir 0.3s ease;
+}
+
+.modal-content h2 {
+    color: #1e293b;
+    font-size: 22px;
+    margin-bottom: 20px;
     text-align: center;
 }
 
-th{
-    background-color: #000000;
+.modal-content p {
+    color: #475569;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.modal-botoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.btn-cancelar {
+    background-color: #64748b;
     color: white;
 }
 
-tbody tr:nth-child(even){
-    background-color: white;
+.btn-cancelar:hover {
+    background-color: #475569;
 }
 
-.btn-editar, .btn-remover{
+.btn-confirmar {
     background-color: #535353;
     color: white;
-    padding: 5px 10px;
-    font-size: 12px;
-    margin: 2px;
 }
 
-.btn-editar:hover, .btn-remover:hover{
+.btn-confirmar:hover {
     background-color: #000000;
-    color: #ffffff;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes subir {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        margin: 15px auto;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    .resumo-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    #total-estoque {
+        font-size: 16px;
+    }
+
+    table {
+        font-size: 11px;
+    }
+
+    th,
+    td {
+        padding: 6px 3px;
+        font-size: 11px;
+    }
+
+    .btn-editar,
+    .btn-remover {
+        padding: 6px;
+        font-size: 10px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .modal-botoes {
+        flex-direction: column;
+    }
+
+    .modal-botoes button {
+        width: 100%;
+    }
 }
