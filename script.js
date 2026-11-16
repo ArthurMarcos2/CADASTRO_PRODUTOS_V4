@@ -173,14 +173,11 @@ selectOrdenacao.addEventListener("change", function() {
 function obterProdutosProcessados() {
     const termoBusca = campoBusca.value.toLowerCase().trim();
 
-    // Filtra mantendo o índice original para permitir edição/exclusão corretas
     let itensFiltrados = listaDeProdutos
         .map((produto, index) => ({ produto, index }))
         .filter(item => item.produto.nome.toLowerCase().includes(termoBusca));
 
     const criterio = selectOrdenacao.value;
-
-    // Ordenação imutável usando spread operator[cite: 5]
     let itensOrdenados = [...itensFiltrados];
 
     if (criterio === "menor-qtd") {
@@ -355,7 +352,7 @@ inputImportarJson.addEventListener("change", function(event) {
         } catch (erro) {
             mostrarMensagem("Erro ao ler o arquivo JSON de backup.");
         }
-        inputImportarJson.value = ""; // Limpa o input
+        inputImportarJson.value = ""; 
     };
     leitor.readAsText(arquivo);
 });
