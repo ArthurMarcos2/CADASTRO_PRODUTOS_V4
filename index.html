@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Estoque - V5</title>
+    <title>Sistema de Estoque - V6</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -16,8 +15,8 @@
         <h1>Cadastro de Produtos</h1>
         <h3>Arthur Marcos e Leo</h3>
 
-        <img src="IMG_20250807_190318_705.jpg">
-        <img src="unnamed.jpg">
+        <img src="IMG_20250807_190318_705.jpg" alt="Foto Arthur">
+        <img src="unnamed.jpg" alt="Foto Leo">
         
         <form id="produto-form">
 
@@ -56,10 +55,29 @@
 
         </div>
 
-        <div class="form-group pesquisa">
-            <label for="campo-busca">Pesquisar produto:</label>
-            <input type="text" id="campo-busca"
-                placeholder="Digite para filtrar...">
+        <div class="controles-busca-ordenacao">
+            <div class="form-group pesquisa">
+                <label for="campo-busca">Pesquisar produto:</label>
+                <input type="text" id="campo-busca" placeholder="Digite para filtrar...">
+            </div>
+
+            <div class="form-group ordenacao">
+                <label for="select-ordenacao">Ordenar por:</label>
+                <select id="select-ordenacao">
+                    <option value="padrao">Padrão (Cadastro)</option>
+                    <option value="menor-qtd">Menor Quantidade</option>
+                    <option value="maior-preco">Maior Preço</option>
+                    <option value="menor-preco">Menor Preço</option>
+                    <option value="alfabetica">Ordem Alfabética (A-Z)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="botoes-portabilidade">
+            <button type="button" id="btn-exportar-csv" class="btn-secondary">Exportar CSV</button>
+            <button type="button" id="btn-exportar-json" class="btn-secondary">Backup JSON</button>
+            <label for="input-importar-json" class="btn-secondary label-importar">Restaurar JSON</label>
+            <input type="file" id="input-importar-json" accept=".json" style="display: none;">
         </div>
 
         <table id="tabela-produtos">
@@ -87,6 +105,7 @@
 
     </div>
 
+    <!-- Modais (Mantidos da V5) -->
     <div id="modal-confirmacao" class="modal-overlay"
         role="dialog" aria-modal="true" aria-labelledby="titulo-modal"
         aria-describedby="texto-modal" hidden>

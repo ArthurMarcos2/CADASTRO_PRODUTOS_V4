@@ -21,7 +21,12 @@ const formProduto = document.getElementById("produto-form");
 const btnLimparTudo = document.getElementById("limpar-tabela");
 const totalEstoqueEl = document.getElementById("total-estoque");
 const campoBusca = document.getElementById("campo-busca");
+const selectOrdenacao = document.getElementById("select-ordenacao");
 const mensagemErro = document.getElementById("mensagem-erro");
+
+const btnExportarCsv = document.getElementById("btn-exportar-csv");
+const btnExportarJson = document.getElementById("btn-exportar-json");
+const inputImportarJson = document.getElementById("input-importar-json");
 
 const modalConfirmacao = document.getElementById("modal-confirmacao");
 const tituloModal = document.getElementById("titulo-modal");
@@ -36,7 +41,6 @@ const btnFecharBootstrap = document.getElementById("btn-fechar-bootstrap");
 const btnAdicionar = document.querySelector(".btn-primary");
 
 formProduto.noValidate = true;
-
 
 function mostrarMensagem(mensagem, tipo = "erro") {
     mensagemErro.textContent = mensagem;
@@ -67,6 +71,8 @@ function carregarDoLocalStorage() {
         if (!Array.isArray(produtosObjetos)) {
             throw new Error("Formato inválido");
         }
+
+        listaDeProdutos.length = 0;
 
         produtosObjetos.forEach((prod) => {
             if (
@@ -141,25 +147,13 @@ formProduto.addEventListener("submit", function(event) {
     );
 
     if (indiceEdicao === null) {
-
         listaDeProdutos.push(novoProduto);
-
-        mostrarMensagem(
-            "Produto cadastrado com sucesso!",
-            "sucesso"
-        );
-
+        mostrarMensagem("Produto cadastrado com sucesso!", "sucesso");
     } else {
-
         listaDeProdutos[indiceEdicao] = novoProduto;
         indiceEdicao = null;
-
         btnAdicionar.textContent = "Adicionar Produto";
-
-        mostrarMensagem(
-            "Produto atualizado com sucesso!",
-            "sucesso"
-        );
+        mostrarMensagem("Produto atualizado com sucesso!", "sucesso");
     }
 
     salvarNoLocalStorage();
@@ -168,29 +162,42 @@ formProduto.addEventListener("submit", function(event) {
     formProduto.reset();
 });
 
-
 campoBusca.addEventListener("input", function() {
     atualizarInterface();
 });
 
-function obterProdutosFiltrados() {
+selectOrdenacao.addEventListener("change", function() {
+    atualizarInterface();
+});
+
+function obterProdutosProcessados() {
     const termoBusca = campoBusca.value.toLowerCase().trim();
 
-    return listaDeProdutos
-        .map((produto, index) => ({
-            produto,
-            index
-        }))
-        .filter(item =>
-            item.produto.nome.toLowerCase().includes(termoBusca)
-        );
+    // Filtra mantendo o índice original para permitir edição/exclusão corretas
+    let itensFiltrados = listaDeProdutos
+        .map((produto, index) => ({ produto, index }))
+        .filter(item => item.produto.nome.toLowerCase().includes(termoBusca));
+
+    const criterio = selectOrdenacao.value;
+
+    // Ordenação imutável usando spread operator[cite: 5]
+    let itensOrdenados = [...itensFiltrados];
+
+    if (criterio === "menor-qtd") {
+        itensOrdenados.sort((a, b) => a.produto.quantidade - b.produto.quantidade);
+    } else if (criterio === "maior-preco") {
+        itensOrdenados.sort((a, b) => b.produto.preco - a.produto.preco);
+    } else if (criterio === "menor-preco") {
+        itensOrdenados.sort((a, b) => a.produto.preco - b.produto.preco);
+    } else if (criterio === "alfabetica") {
+        itensOrdenados.sort((a, b) => a.produto.nome.localeCompare(b.produto.nome));
+    }
+
+    return itensOrdenados;
 }
 
-
 function prepararEdicao(index) {
-
     const produto = listaDeProdutos[index];
-
     if (!produto) return;
 
     document.getElementById("nome").value = produto.nome;
@@ -198,9 +205,7 @@ function prepararEdicao(index) {
     document.getElementById("quantidade").value = produto.quantidade;
 
     indiceEdicao = index;
-
     btnAdicionar.textContent = "Salvar Alterações";
-
     limparMensagem();
 
     document.getElementById("nome").focus();
@@ -211,23 +216,16 @@ function prepararEdicao(index) {
     });
 }
 
-
 function abrirModal(titulo, mensagem, acao) {
-
     tituloModal.textContent = titulo;
     textoModal.textContent = mensagem;
-
     acaoPendente = acao;
-
     modalConfirmacao.hidden = false;
-
     btnCancelar.focus();
 }
 
 function fecharModal() {
-
     modalConfirmacao.hidden = true;
-
     acaoPendente = null;
 }
 
@@ -236,106 +234,134 @@ btnCancelar.addEventListener("click", function() {
 });
 
 btnConfirmar.addEventListener("click", function() {
-
     if (typeof acaoPendente === "function") {
         const acao = acaoPendente;
-
         fecharModal();
-
         acao();
     }
 });
 
 modalConfirmacao.addEventListener("click", function(event) {
-
     if (event.target === modalConfirmacao) {
         fecharModal();
     }
 });
 
-
 function removerProduto(index) {
-
     const produto = listaDeProdutos[index];
-
     if (!produto) return;
 
     abrirModal(
         "Excluir Produto",
         `Tem certeza que deseja excluir o produto "${produto.nome}"?`,
         function() {
-
             if (indiceEdicao === index) {
-
                 indiceEdicao = null;
-
                 btnAdicionar.textContent = "Adicionar Produto";
-
                 formProduto.reset();
-
-            } else if (
-                indiceEdicao !== null &&
-                index < indiceEdicao
-            ) {
+            } else if (indiceEdicao !== null && index < indiceEdicao) {
                 indiceEdicao--;
             }
 
             listaDeProdutos.splice(index, 1);
-
             salvarNoLocalStorage();
-
             atualizarInterface();
-
-            mostrarMensagem(
-                "Produto removido com sucesso!",
-                "sucesso"
-            );
+            mostrarMensagem("Produto removido com sucesso!", "sucesso");
         }
     );
 }
 
-
 btnLimparTudo.addEventListener("click", function() {
-
     if (listaDeProdutos.length === 0) {
-
         mostrarMensagem("O estoque já está vazio!");
-
         return;
     }
 
     abrirModal(
         "Limpar Todo o Estoque",
-        "Tem certeza que deseja excluir TODOS os produtos? Essa ação não poderá ser desfeita.",
+        "Tem certeza que deseja excluir TODOS los produtos? Essa ação não poderá ser desfeita.",
         function() {
-
             listaDeProdutos.length = 0;
-
             indiceEdicao = null;
-
             localStorage.removeItem(CHAVE_STORAGE);
-
             formProduto.reset();
-
             btnAdicionar.textContent = "Adicionar Produto";
-
-            salvarNoLocalStorage();
-
             atualizarInterface();
-
-            mostrarMensagem(
-                "Todos os produtos foram removidos!",
-                "sucesso"
-            );
+            mostrarMensagem("Todos os produtos foram removidos!", "sucesso");
         }
     );
 });
 
+btnExportarCsv.addEventListener("click", function() {
+    if (listaDeProdutos.length === 0) {
+        mostrarMensagem("Não há produtos para exportar.");
+        return;
+    }
+
+    let conteudoCsv = "Nome;Preco;Quantidade;Subtotal\n";
+    listaDeProdutos.forEach(p => {
+        conteudoCsv += `${p.nome};${p.preco.toFixed(2)};${p.quantidade};${p.calcularSubtotal().toFixed(2)}\n`;
+    });
+
+    const blob = new Blob([conteudoCsv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "estoque.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+
+btnExportarJson.addEventListener("click", function() {
+    if (listaDeProdutos.length === 0) {
+        mostrarMensagem("Não há dados para gerar o backup.");
+        return;
+    }
+
+    const dadosJson = JSON.stringify(listaDeProdutos, null, 2);
+    const blob = new Blob([dadosJson], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "backup_estoque.json");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+
+inputImportarJson.addEventListener("change", function(event) {
+    const arquivo = event.target.files[0];
+    if (!arquivo) return;
+
+    const leitor = new FileReader();
+    leitor.onload = function(e) {
+        try {
+            const dadosRestaurados = JSON.parse(e.target.result);
+            if (!Array.isArray(dadosRestaurados)) {
+                throw new Error("Arquivo JSON inválido.");
+            }
+
+            listaDeProdutos.length = 0;
+            dadosRestaurados.forEach(prod => {
+                if (prod.nome && prod.preco && prod.quantidade) {
+                    listaDeProdutos.push(new Produto(prod.nome, prod.preco, prod.quantidade));
+                }
+            });
+
+            salvarNoLocalStorage();
+            atualizarInterface();
+            mostrarMensagem("Backup restaurado com sucesso!", "sucesso");
+        } catch (erro) {
+            mostrarMensagem("Erro ao ler o arquivo JSON de backup.");
+        }
+        inputImportarJson.value = ""; // Limpa o input
+    };
+    leitor.readAsText(arquivo);
+});
 
 btnBootstrap.addEventListener("click", function() {
-
     modalBootstrap.hidden = false;
-
     btnFecharBootstrap.focus();
 });
 
@@ -348,103 +374,89 @@ btnFecharBootstrap.addEventListener("click", function() {
 });
 
 modalBootstrap.addEventListener("click", function(event) {
-
     if (event.target === modalBootstrap) {
         fecharModalBootstrap();
     }
 });
 
 document.addEventListener("keydown", function(event) {
-
     if (event.key === "Escape") {
-
         if (!modalConfirmacao.hidden) {
             fecharModal();
         }
-
         if (!modalBootstrap.hidden) {
             fecharModalBootstrap();
         }
     }
 });
 
-
 function atualizarTotalEstoque() {
-
     const total = listaDeProdutos.reduce((acc, produto) => {
         return acc + produto.calcularSubtotal();
     }, 0);
 
-    totalEstoqueEl.textContent =
-        `Total em Estoque: R$ ${total.toFixed(2)}`;
+    totalEstoqueEl.textContent = `Total em Estoque: R$ ${total.toFixed(2)}`;
 }
 
 function renderizarTabela() {
-
-    const tabelaBody = document.querySelector(
-        "#tabela-produtos tbody"
-    );
-
+    const tabelaBody = document.querySelector("#tabela-produtos tbody");
     tabelaBody.innerHTML = "";
 
-    const produtosVisiveis = obterProdutosFiltrados();
+    const produtosVisiveis = obterProdutosProcessados();
 
     if (produtosVisiveis.length === 0) {
-
         const linhaVazia = document.createElement("tr");
-
         const colunaVazia = document.createElement("td");
-
         colunaVazia.colSpan = 5;
-
         colunaVazia.textContent = "Nenhum produto encontrado.";
-
         linhaVazia.appendChild(colunaVazia);
-
         tabelaBody.appendChild(linhaVazia);
-
         return;
     }
 
     produtosVisiveis.forEach((item) => {
-
         const produto = item.produto;
         const indexReal = item.index;
 
         const linha = document.createElement("tr");
 
+        if (produto.quantidade <= 3) {
+            linha.classList.add("estoque-critico");
+        }
+
         const colunaNome = document.createElement("td");
         colunaNome.textContent = produto.nome;
+        
+        if (produto.quantidade <= 3) {
+            const badge = document.createElement("span");
+            badge.className = "badge-alerta";
+            badge.textContent = "Repor";
+            colunaNome.appendChild(badge);
+        }
 
         const colunaPreco = document.createElement("td");
-        colunaPreco.textContent =
-            `R$ ${produto.preco.toFixed(2)}`;
+        colunaPreco.textContent = `R$ ${produto.preco.toFixed(2)}`;
 
         const colunaQuantidade = document.createElement("td");
         colunaQuantidade.textContent = produto.quantidade;
 
         const colunaSubtotal = document.createElement("td");
-        colunaSubtotal.textContent =
-            `R$ ${produto.calcularSubtotal().toFixed(2)}`;
+        colunaSubtotal.textContent = `R$ ${produto.calcularSubtotal().toFixed(2)}`;
 
         const colunaAcoes = document.createElement("td");
 
         const btnEditar = document.createElement("button");
-
         btnEditar.textContent = "Editar";
         btnEditar.className = "btn-editar";
         btnEditar.type = "button";
-
         btnEditar.addEventListener("click", function() {
             prepararEdicao(indexReal);
         });
 
         const btnRemover = document.createElement("button");
-
         btnRemover.textContent = "Remover";
         btnRemover.className = "btn-remover";
         btnRemover.type = "button";
-
         btnRemover.addEventListener("click", function() {
             removerProduto(indexReal);
         });
@@ -462,15 +474,10 @@ function renderizarTabela() {
     });
 }
 
-
 function atualizarInterface() {
-
     renderizarTabela();
-
     atualizarTotalEstoque();
 }
 
-
 carregarDoLocalStorage();
-
 atualizarInterface();
